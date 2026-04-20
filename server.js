@@ -44,6 +44,39 @@ app.get('/cart', (req, res) => {
     res.render('cart', { title: 'Shopping Cart' });
 });
 
+app.get('/checkout', (req, res) => {
+    res.render('checkout', { title: 'Checkout' });
+});
+
+app.post('/checkout', (req, res) => {
+    const { fullName, address, phoneNumber } = req.body;
+    const errors = {};
+
+    if (!fullName || fullName.trim().length < 3) {
+        errors.fullName = 'Full name must be at least 3 characters long.';
+    }
+
+    if (!address || address.trim().length < 10) {
+        errors.address = 'Address must be at least 10 characters long.';
+    }
+
+    if (!phoneNumber || !/^[0-9+\-\s()]{7,20}$/.test(phoneNumber.trim())) {
+        errors.phoneNumber = 'Enter a valid phone number.';
+    }
+
+    if (Object.keys(errors).length > 0) {
+        return res.status(400).json({
+            success: false,
+            errors: errors
+        });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: 'Checkout details received successfully.'
+    });
+});
+
 // App connection
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

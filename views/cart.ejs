@@ -13,24 +13,28 @@
     
     <style>
         .cart-item-img {
-            width: 80px;
-            height: 80px;
+            width: 72px;
+            height: 72px;
             object-fit: cover;
             border-radius: 8px;
         }
-        .qty-btn {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            border: 1px solid #dee2e6;
-            background: white;
-            transition: all 0.2s;
+        .cart-table td,
+        .cart-table th {
+            vertical-align: middle;
         }
-        .qty-btn:hover {
-            background: #f8f9fa;
+        .cart-summary-card {
+            background: #ffffff;
+            border-radius: 1.5rem;
+        }
+        .cart-empty-state {
+            background: #ffffff;
+            border-radius: 1.5rem;
+        }
+        @media (max-width: 767.98px) {
+            .cart-item-img {
+                width: 56px;
+                height: 56px;
+            }
         }
     </style>
 </head>
@@ -70,24 +74,24 @@
                 
                 <!-- Order Summary -->
                 <div class="col-lg-4" id="orderSummaryContainer" style="display: none;">
-                    <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 100px;">
+                    <div class="card cart-summary-card border-0 shadow-sm p-4 sticky-top" style="top: 100px;">
                         <h4 class="fw-bold mb-4">Order Summary</h4>
                         <div class="d-flex justify-content-between mb-3 text-muted">
-                            <span>Subtotal</span>
-                            <span id="summarySubtotal">$0.00</span>
+                            <span>Items</span>
+                            <span id="summaryItems">0</span>
                         </div>
                         <div class="d-flex justify-content-between mb-3 text-muted">
-                            <span>Shipping</span>
-                            <span>Free</span>
+                            <span>Total Price</span>
+                            <span id="summarySubtotal">$0.00</span>
                         </div>
                         <hr class="my-4">
                         <div class="d-flex justify-content-between mb-4 fs-4 fw-bold">
                             <span>Total</span>
                             <span id="summaryTotal" class="text-primary">$0.00</span>
                         </div>
-                        <button class="btn btn-primary w-100 py-3 fw-bold rounded-pill shadow-sm fs-5">
+                        <a href="/checkout" class="btn btn-primary w-100 py-3 fw-bold rounded-pill shadow-sm fs-5">
                             Proceed to Checkout
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -107,7 +111,7 @@
             
             if (!cartItems || cartItems.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+                    <div class="cart-empty-state text-center py-5 shadow-sm">
                         <h3 class="text-muted fw-bold mb-3">Your cart is empty</h3>
                         <p class="text-secondary mb-4">Looks like you haven't added anything yet.</p>
                         <a href="/" class="btn btn-primary px-4 py-2 rounded-pill fw-bold">Continue Shopping</a>
@@ -118,40 +122,64 @@
             }
             
             let total = 0;
-            let html = '<div class="d-flex flex-column gap-3">';
+            let totalItems = 0;
+            let html = `
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="table-responsive">
+                        <table class="table cart-table align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="ps-4">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Subtotal</th>
+                                    <th scope="col" class="text-end pe-4">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
             
             cartItems.forEach(item => {
                 const itemTotal = item.price * item.quantity;
                 total += itemTotal;
+                totalItems += item.quantity;
                 
                 html += `
-                    <div class="card border-0 shadow-sm rounded-4 p-3 position-relative">
-                        <div class="d-flex align-items-center gap-4">
-                            <img src="${item.image}" alt="${item.name}" class="cart-item-img shadow-sm">
-                            <div class="flex-grow-1">
-                                <h5 class="fw-bold mb-1">${item.name}</h5>
-                                <p class="text-primary fw-bold mb-2">$${item.price.toFixed(2)}</p>
-                                
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="d-flex align-items-center gap-2 bg-light rounded-pill px-2 py-1">
-                                        <button class="btn btn-sm btn-link text-decoration-none text-dark fw-bold px-2 py-0" onclick="CartManager.updateQuantity(${item.id}, -1)">-</button>
-                                        <span class="fw-bold px-2">${item.quantity}</span>
-                                        <button class="btn btn-sm btn-link text-decoration-none text-dark fw-bold px-2 py-0" onclick="CartManager.updateQuantity(${item.id}, 1)">+</button>
-                                    </div>
-                                    <button class="btn btn-sm text-danger fw-bold" onclick="CartManager.removeItem(${item.id})">Remove</button>
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="${item.image}" alt="${item.name}" class="cart-item-img shadow-sm">
+                                <div>
+                                    <h5 class="fw-bold mb-1">${item.name}</h5>
+                                    <p class="text-muted mb-0 small">Item #${item.id}</p>
                                 </div>
                             </div>
-                            <div class="text-end fw-bold fs-5">
-                                $${itemTotal.toFixed(2)}
+                        </td>
+                        <td class="fw-semibold text-primary">$${item.price.toFixed(2)}</td>
+                        <td>
+                            <div class="input-group input-group-sm" style="max-width: 140px;">
+                                <button class="btn btn-outline-secondary" type="button" onclick="CartManager.updateQuantity(${item.id}, -1)">-</button>
+                                <input type="text" class="form-control text-center fw-bold" value="${item.quantity}" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="CartManager.updateQuantity(${item.id}, 1)">+</button>
                             </div>
-                        </div>
-                    </div>
+                        </td>
+                        <td class="fw-bold">$${itemTotal.toFixed(2)}</td>
+                        <td class="text-end pe-4">
+                            <button class="btn btn-outline-danger btn-sm rounded-pill px-3" onclick="CartManager.removeItem(${item.id})">Remove</button>
+                        </td>
+                    </tr>
                 `;
             });
             
-            html += '</div>';
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
             container.innerHTML = html;
             
+            document.getElementById('summaryItems').innerText = totalItems;
             document.getElementById('summarySubtotal').innerText = '$' + total.toFixed(2);
             document.getElementById('summaryTotal').innerText = '$' + total.toFixed(2);
             summaryContainer.style.display = 'block';
