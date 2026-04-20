@@ -176,7 +176,8 @@
                 const formData = {
                     fullName: document.getElementById('fullName').value.trim(),
                     address: document.getElementById('address').value.trim(),
-                    phoneNumber: document.getElementById('phoneNumber').value.trim()
+                    phoneNumber: document.getElementById('phoneNumber').value.trim(),
+                    cartItems: CartManager.getCart()
                 };
 
                 let hasErrors = false;
@@ -219,15 +220,26 @@
                     if (!response.ok) {
                         if (result.errors) {
                             Object.entries(result.errors).forEach(([field, message]) => {
+                                if (field === 'cartItems') {
+                                    alertContainer.innerHTML = `
+                                        <div class="alert alert-danger rounded-4" role="alert">
+                                            ${message}
+                                        </div>
+                                    `;
+                                    return;
+                                }
+
                                 showFieldError(field, message);
                             });
                         }
 
-                        alertContainer.innerHTML = `
-                            <div class="alert alert-danger rounded-4" role="alert">
-                                Please correct the highlighted fields and try again.
-                            </div>
-                        `;
+                        if (!alertContainer.innerHTML) {
+                            alertContainer.innerHTML = `
+                                <div class="alert alert-danger rounded-4" role="alert">
+                                    Please correct the highlighted fields and try again.
+                                </div>
+                            `;
+                        }
                         return;
                     }
 
