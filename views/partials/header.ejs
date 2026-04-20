@@ -22,6 +22,23 @@
                         Cart <span class="badge rounded-pill bg-primary" id="cartCount">0</span>
                     </a>
                 </li>
+                <% if (currentUser) { %>
+                    <li class="nav-item">
+                        <span class="nav-link disabled">Hi, <%= currentUser.fullName.split(' ')[0] %></span>
+                    </li>
+                    <li class="nav-item">
+                        <form action="/logout" method="POST" class="m-0">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm px-3">Logout</button>
+                        </form>
+                    </li>
+                <% } else { %>
+                    <li class="nav-item">
+                        <a class="nav-link <%= activePage === 'login' ? 'active' : '' %>" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary btn-sm px-3" href="/register">Register</a>
+                    </li>
+                <% } %>
             </ul>
         </div>
     </div>

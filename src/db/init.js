@@ -1,6 +1,7 @@
 const { query } = require('../config/db');
 const {
     createProductsTable,
+    createUsersTable,
     createOrdersTable,
     createOrderItemsTable
 } = require('./schema');
@@ -21,7 +22,9 @@ async function seedInitialProducts() {
 
 async function initializeDatabase() {
     await query(createProductsTable);
+    await query(createUsersTable);
     await query(createOrdersTable);
+    await query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE SET NULL');
     await query(createOrderItemsTable);
     await seedInitialProducts();
 }

@@ -9,9 +9,21 @@ const createProductsTable = `
     );
 `;
 
+const createUsersTable = `
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        full_name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        phone_number VARCHAR(50) NOT NULL,
+        password_hash TEXT NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+`;
+
 const createOrdersTable = `
     CREATE TABLE IF NOT EXISTS orders (
         id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
         full_name VARCHAR(255) NOT NULL,
         address TEXT NOT NULL,
         phone_number VARCHAR(50) NOT NULL,
@@ -34,6 +46,7 @@ const createOrderItemsTable = `
 
 module.exports = {
     createProductsTable,
+    createUsersTable,
     createOrdersTable,
     createOrderItemsTable
 };

@@ -4,7 +4,15 @@ const cors = require('cors');
 const path = require('path');
 const Product = require('./src/models/Product');
 const Order = require('./src/models/Order');
+const User = require('./src/models/User');
 const { initializeDatabase } = require('./src/db/init');
+const {
+    attachSession,
+    clearSession,
+    createSession,
+    hashPassword,
+    verifyPassword
+} = require('./src/utils/auth');
 
 // Initialize app
 const app = express();
@@ -15,6 +23,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(attachSession);
 
 // Set up EJS for Templating
 app.set('view engine', 'ejs');
@@ -63,6 +72,164 @@ app.get('/cart', (req, res) => {
 
 app.get('/checkout', (req, res) => {
     res.render('checkout', { title: 'Checkout', activePage: 'checkout' });
+});
+
+app.get('/register', (req, res) => {
+    if (req.currentUser) {
+        return res.redirect('/');
+    }
+
+    res.render('register', {
+        title: 'Register',
+        activePage: 'register',
+        formData: {},
+        errors: {},
+        successMessage: null
+    });
+});
+
+app.post('/register', async (req, res) => {
+    const { fullName = '', email = '', phoneNumber = '', password = '', confirmPassword = '' } = req.body;
+    const formData = {
+        fullName: fullName.trim(),
+        email: email.trim(),
+        phoneNumber: phoneNumber.trim()
+    };
+    const errors = {};
+
+    if (formData.fullName.length < 3) {
+        errors.fullName = 'Full name must be at least 3 characters long.';
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+        errors.email = 'Enter a valid email address.';
+    }
+
+    if (!/^[0-9+\-\s()]{7,20}$/.test(formData.phoneNumber)) {
+        errors.phoneNumber = 'Enter a valid phone number.';
+    }
+
+    if (password.length < 6) {
+        errors.password = 'Password must be at least 6 characters long.';
+    }
+
+    if (password !== confirmPassword) {
+        errors.confirmPassword = 'Passwords do not match.';
+    }
+
+    try {
+        if (!errors.email) {
+            const existingUser = await User.getByEmail(formData.email);
+            if (existingUser) {
+                errors.email = 'An account with this email already exists.';
+            }
+        }
+
+        if (Object.keys(errors).length > 0) {
+            return res.status(400).render('register', {
+                title: 'Register',
+                activePage: 'register',
+                formData,
+                errors,
+                successMessage: null
+            });
+        }
+
+        const newUser = await User.create({
+            ...formData,
+            passwordHash: hashPassword(password)
+        });
+
+        createSession(res, {
+            id: newUser.id,
+            fullName: newUser.fullName,
+            email: newUser.email
+        });
+
+        res.redirect('/');
+    } catch (error) {
+        console.error('Failed to register user:', error.message);
+        res.status(500).render('register', {
+            title: 'Register',
+            activePage: 'register',
+            formData,
+            errors: {
+                general: 'Unable to create your account right now.'
+            },
+            successMessage: null
+        });
+    }
+});
+
+app.get('/login', (req, res) => {
+    if (req.currentUser) {
+        return res.redirect('/');
+    }
+
+    res.render('login', {
+        title: 'Login',
+        activePage: 'login',
+        formData: {},
+        errors: {}
+    });
+});
+
+app.post('/login', async (req, res) => {
+    const { email = '', password = '' } = req.body;
+    const formData = { email: email.trim() };
+    const errors = {};
+
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+        errors.email = 'Enter a valid email address.';
+    }
+
+    if (!password) {
+        errors.password = 'Password is required.';
+    }
+
+    try {
+        let user = null;
+
+        if (Object.keys(errors).length === 0) {
+            user = await User.getByEmail(formData.email);
+
+            if (!user || !verifyPassword(password, user.passwordHash)) {
+                errors.general = 'Invalid email or password.';
+            }
+        }
+
+        if (Object.keys(errors).length > 0) {
+            return res.status(400).render('login', {
+                title: 'Login',
+                activePage: 'login',
+                formData,
+                errors
+            });
+        }
+
+        createSession(res, {
+            id: user.id,
+            fullName: user.fullName,
+            email: user.email
+        });
+
+        res.redirect('/');
+    } catch (error) {
+        console.error('Failed to login user:', error.message);
+        res.status(500).render('login', {
+            title: 'Login',
+            activePage: 'login',
+            formData,
+            errors: {
+                general: 'Unable to log in right now.'
+            }
+        });
+    }
+});
+
+app.post('/logout', (req, res) => {
+    clearSession(req, res);
+    res.redirect('/');
 });
 
 app.post('/checkout', async (req, res) => {
@@ -122,6 +289,7 @@ app.post('/checkout', async (req, res) => {
         }
 
         const order = await Order.create({
+            userId: req.currentUser ? req.currentUser.id : null,
             customerInfo: {
                 fullName: fullName.trim(),
                 address: address.trim(),

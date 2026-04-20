@@ -9,11 +9,12 @@ const Order = {
 
             const orderResult = await client.query(
                 `
-                    INSERT INTO orders (full_name, address, phone_number, total_price)
-                    VALUES ($1, $2, $3, $4)
+                    INSERT INTO orders (user_id, full_name, address, phone_number, total_price)
+                    VALUES ($1, $2, $3, $4, $5)
                     RETURNING *
                 `,
                 [
+                    orderData.userId || null,
                     orderData.customerInfo.fullName,
                     orderData.customerInfo.address,
                     orderData.customerInfo.phoneNumber,
