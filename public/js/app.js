@@ -52,18 +52,72 @@ const CartManager = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initial cart icon load
     CartManager.updateCartIcon();
-    
-    // Smooth navbar scroll effect
+    hidePageLoader();
+    setupRevealAnimations();
+    setupButtonLoadingStates();
+
     const navbar = document.querySelector('.navbar');
     if(navbar) {
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
-                navbar.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+                navbar.style.boxShadow = '0 20px 45px rgba(15, 23, 42, 0.08)';
             } else {
                 navbar.style.boxShadow = 'none';
             }
         });
     }
 });
+
+function hidePageLoader() {
+    const loader = document.querySelector('[data-page-loader]');
+    if (!loader) {
+        return;
+    }
+
+    requestAnimationFrame(() => {
+        loader.classList.add('hidden');
+    });
+}
+
+function setupRevealAnimations() {
+    const revealItems = document.querySelectorAll('.reveal');
+    if (!revealItems.length) {
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('reveal-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    revealItems.forEach((item) => observer.observe(item));
+}
+
+function setupButtonLoadingStates() {
+    document.querySelectorAll('[data-loading-text]').forEach((button) => {
+        button.addEventListener('click', () => {
+            if (button.dataset.skipLoading === 'true') {
+                return;
+            }
+
+            if (button.tagName === 'A') {
+                return;
+            }
+
+            if (button.form && !button.form.checkValidity()) {
+                return;
+            }
+
+            button.dataset.originalText = button.innerHTML;
+            button.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                ${button.dataset.loadingText}
+            `;
+        });
+    });
+}

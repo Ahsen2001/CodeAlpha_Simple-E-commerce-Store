@@ -4,114 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    
     <style>
-        .cart-item-img {
-            width: 72px;
-            height: 72px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .cart-table td,
-        .cart-table th {
-            vertical-align: middle;
-        }
-        .cart-summary-card {
-            background: #ffffff;
-            border-radius: 1.5rem;
-        }
-        .cart-empty-state {
-            background: #ffffff;
-            border-radius: 1.5rem;
-        }
-        @media (max-width: 767.98px) {
-            .cart-item-img {
-                width: 56px;
-                height: 56px;
-            }
-        }
+        .cart-item-img { width: 72px; height: 72px; object-fit: cover; border-radius: 12px; }
+        .cart-table td, .cart-table th { vertical-align: middle; }
+        .cart-summary-card, .cart-empty-state { background: #ffffff; border-radius: 1.5rem; }
+        @media (max-width: 767.98px) { .cart-item-img { width: 56px; height: 56px; } }
     </style>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg glass-nav fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/">🛍️ LuxeStore</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link cart-icon" href="/cart" id="cartToggle">
-                            🛒 <span class="badge rounded-pill bg-primary" id="cartCount">0</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="container mt-5 pt-5 mb-5" style="min-height: 70vh;">
+<body class="page-shell">
+    <%- include('partials/header', { activePage }) %>
+    <main class="container mt-5 pt-5 mb-5 section-space" style="min-height: 70vh;">
         <div class="py-4">
-            <h1 class="display-5 fw-bold mb-4">Your Cart</h1>
-            
+            <div class="reveal mb-4">
+                <span class="hero-chip">Cart overview</span>
+                <h1 class="display-5 fw-bold mt-3 mb-2">Your Cart</h1>
+                <p class="soft-text mb-0">Review products, adjust quantities, and move smoothly into checkout.</p>
+            </div>
             <div class="row g-5">
-                <!-- Cart Items List -->
-                <div class="col-lg-8" id="cartItemsContainer">
-                    <!-- Populated via JS -->
-                </div>
-                
-                <!-- Order Summary -->
-                <div class="col-lg-4" id="orderSummaryContainer" style="display: none;">
-                    <div class="card cart-summary-card border-0 shadow-sm p-4 sticky-top" style="top: 100px;">
+                <div class="col-lg-8 reveal stagger-1" id="cartItemsContainer"></div>
+                <div class="col-lg-4 reveal stagger-2" id="orderSummaryContainer" style="display: none;">
+                    <div class="card cart-summary-card floating-panel border-0 shadow-sm p-4 sticky-top" style="top: 100px;">
                         <h4 class="fw-bold mb-4">Order Summary</h4>
-                        <div class="d-flex justify-content-between mb-3 text-muted">
-                            <span>Items</span>
-                            <span id="summaryItems">0</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-3 text-muted">
-                            <span>Total Price</span>
-                            <span id="summarySubtotal">$0.00</span>
-                        </div>
+                        <div class="d-flex justify-content-between mb-3 text-muted"><span>Items</span><span id="summaryItems">0</span></div>
+                        <div class="d-flex justify-content-between mb-3 text-muted"><span>Total Price</span><span id="summarySubtotal">$0.00</span></div>
                         <hr class="my-4">
-                        <div class="d-flex justify-content-between mb-4 fs-4 fw-bold">
-                            <span>Total</span>
-                            <span id="summaryTotal" class="text-primary">$0.00</span>
-                        </div>
-                        <a href="/checkout" class="btn btn-primary w-100 py-3 fw-bold rounded-pill shadow-sm fs-5">
-                            Proceed to Checkout
-                        </a>
+                        <div class="d-flex justify-content-between mb-4 fs-4 fw-bold"><span>Total</span><span id="summaryTotal" class="text-primary">$0.00</span></div>
+                        <a href="/checkout" class="btn btn-primary w-100 py-3 fw-bold rounded-pill shadow-sm fs-5">Proceed to Checkout</a>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-
+    <%- include('partials/footer') %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', renderCart);
         window.addEventListener('cartUpdated', renderCart);
-        
         function renderCart() {
             const cartItems = CartManager.getCart();
             const container = document.getElementById('cartItemsContainer');
             const summaryContainer = document.getElementById('orderSummaryContainer');
-            
             if (!cartItems || cartItems.length === 0) {
                 container.innerHTML = `
-                    <div class="cart-empty-state text-center py-5 shadow-sm">
+                    <div class="cart-empty-state text-center py-5 shadow-sm floating-panel">
                         <h3 class="text-muted fw-bold mb-3">Your cart is empty</h3>
                         <p class="text-secondary mb-4">Looks like you haven't added anything yet.</p>
                         <a href="/" class="btn btn-primary px-4 py-2 rounded-pill fw-bold">Continue Shopping</a>
@@ -120,11 +61,10 @@
                 summaryContainer.style.display = 'none';
                 return;
             }
-            
             let total = 0;
             let totalItems = 0;
             let html = `
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden floating-panel">
                     <div class="table-responsive">
                         <table class="table cart-table align-middle mb-0">
                             <thead class="table-light">
@@ -138,47 +78,27 @@
                             </thead>
                             <tbody>
             `;
-            
             cartItems.forEach(item => {
                 const itemTotal = item.price * item.quantity;
                 total += itemTotal;
                 totalItems += item.quantity;
-                
                 html += `
                     <tr>
                         <td class="ps-4">
                             <div class="d-flex align-items-center gap-3">
                                 <img src="${item.image}" alt="${item.name}" class="cart-item-img shadow-sm">
-                                <div>
-                                    <h5 class="fw-bold mb-1">${item.name}</h5>
-                                    <p class="text-muted mb-0 small">Item #${item.id}</p>
-                                </div>
+                                <div><h5 class="fw-bold mb-1">${item.name}</h5><p class="text-muted mb-0 small">Item #${item.id}</p></div>
                             </div>
                         </td>
                         <td class="fw-semibold text-primary">$${item.price.toFixed(2)}</td>
-                        <td>
-                            <div class="input-group input-group-sm" style="max-width: 140px;">
-                                <button class="btn btn-outline-secondary" type="button" onclick="CartManager.updateQuantity(${item.id}, -1)">-</button>
-                                <input type="text" class="form-control text-center fw-bold" value="${item.quantity}" readonly>
-                                <button class="btn btn-outline-secondary" type="button" onclick="CartManager.updateQuantity(${item.id}, 1)">+</button>
-                            </div>
-                        </td>
+                        <td><div class="input-group input-group-sm" style="max-width: 140px;"><button class="btn btn-outline-secondary" type="button" onclick="CartManager.updateQuantity(${item.id}, -1)">-</button><input type="text" class="form-control text-center fw-bold" value="${item.quantity}" readonly><button class="btn btn-outline-secondary" type="button" onclick="CartManager.updateQuantity(${item.id}, 1)">+</button></div></td>
                         <td class="fw-bold">$${itemTotal.toFixed(2)}</td>
-                        <td class="text-end pe-4">
-                            <button class="btn btn-outline-danger btn-sm rounded-pill px-3" onclick="CartManager.removeItem(${item.id})">Remove</button>
-                        </td>
+                        <td class="text-end pe-4"><button class="btn btn-outline-danger btn-sm rounded-pill px-3" onclick="CartManager.removeItem(${item.id})">Remove</button></td>
                     </tr>
                 `;
             });
-            
-            html += `
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
+            html += `</tbody></table></div></div>`;
             container.innerHTML = html;
-            
             document.getElementById('summaryItems').innerText = totalItems;
             document.getElementById('summarySubtotal').innerText = '$' + total.toFixed(2);
             document.getElementById('summaryTotal').innerText = '$' + total.toFixed(2);

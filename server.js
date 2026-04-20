@@ -27,7 +27,8 @@ app.get('/', async (req, res) => {
 
         res.render('index', {
             title: 'Modern E-Commerce Store',
-            products: products
+            products: products,
+            activePage: 'home'
         });
     } catch (error) {
         console.error('Failed to load products:', error.message);
@@ -47,7 +48,8 @@ app.get('/product/:id', async (req, res) => {
 
         res.render('product', {
             title: product.name,
-            product: product
+            product: product,
+            activePage: 'product'
         });
     } catch (error) {
         console.error('Failed to load product:', error.message);
@@ -56,11 +58,11 @@ app.get('/product/:id', async (req, res) => {
 });
 
 app.get('/cart', (req, res) => {
-    res.render('cart', { title: 'Shopping Cart' });
+    res.render('cart', { title: 'Shopping Cart', activePage: 'cart' });
 });
 
 app.get('/checkout', (req, res) => {
-    res.render('checkout', { title: 'Checkout' });
+    res.render('checkout', { title: 'Checkout', activePage: 'checkout' });
 });
 
 app.post('/checkout', async (req, res) => {

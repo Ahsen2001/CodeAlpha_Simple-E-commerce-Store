@@ -4,96 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-
     <style>
-        .checkout-card {
-            background: #ffffff;
-            border-radius: 1.5rem;
-        }
-        .summary-list-item + .summary-list-item {
-            border-top: 1px solid #eef2f7;
-        }
+        .checkout-card { background: #ffffff; border-radius: 1.5rem; }
+        .summary-list-item + .summary-list-item { border-top: 1px solid #eef2f7; }
     </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg glass-nav fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/">ًں›چï¸ڈ LuxeStore</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link cart-icon" href="/cart" id="cartToggle">
-                            ًں›’ <span class="badge rounded-pill bg-primary" id="cartCount">0</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <main class="container mt-5 pt-5 mb-5" style="min-height: 70vh;">
+<body class="page-shell">
+    <%- include('partials/header', { activePage }) %>
+    <main class="container mt-5 pt-5 mb-5 section-space" style="min-height: 70vh;">
         <div class="py-4">
-            <div class="mb-4">
-                <h1 class="display-5 fw-bold mb-2">Checkout</h1>
-                <p class="text-muted mb-0">Enter your delivery details to place the order.</p>
+            <div class="mb-4 reveal">
+                <span class="hero-chip">Secure checkout</span>
+                <h1 class="display-5 fw-bold mt-3 mb-2">Checkout</h1>
+                <p class="soft-text mb-0">Complete your order with a cleaner form flow and clearer order summary.</p>
             </div>
-
             <div class="row g-4">
-                <div class="col-lg-7">
-                    <div class="card checkout-card border-0 shadow-sm p-4 p-md-5">
+                <div class="col-lg-7 reveal stagger-1">
+                    <div class="card checkout-card floating-panel border-0 shadow-sm p-4 p-md-5">
                         <h3 class="fw-bold mb-4">Billing Details</h3>
-
                         <div id="checkoutAlert"></div>
-
                         <form id="checkoutForm" class="needs-validation" novalidate>
-                            <div class="mb-3">
-                                <label for="fullName" class="form-label fw-semibold">Full Name</label>
-                                <input type="text" class="form-control form-control-lg" id="fullName" name="fullName" minlength="3" required>
-                                <div class="invalid-feedback" id="fullNameError">
-                                    Please enter your full name.
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="address" class="form-label fw-semibold">Address</label>
-                                <textarea class="form-control form-control-lg" id="address" name="address" rows="4" minlength="10" required></textarea>
-                                <div class="invalid-feedback" id="addressError">
-                                    Please enter a valid address.
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="phoneNumber" class="form-label fw-semibold">Phone Number</label>
-                                <input type="tel" class="form-control form-control-lg" id="phoneNumber" name="phoneNumber" pattern="[0-9+\-\s()]{7,20}" required>
-                                <div class="invalid-feedback" id="phoneNumberError">
-                                    Please enter a valid phone number.
-                                </div>
-                            </div>
-
+                            <div class="mb-3"><label for="fullName" class="form-label fw-semibold">Full Name</label><input type="text" class="form-control form-control-lg" id="fullName" name="fullName" minlength="3" required><div class="invalid-feedback" id="fullNameError">Please enter your full name.</div></div>
+                            <div class="mb-3"><label for="address" class="form-label fw-semibold">Address</label><textarea class="form-control form-control-lg" id="address" name="address" rows="4" minlength="10" required></textarea><div class="invalid-feedback" id="addressError">Please enter a valid address.</div></div>
+                            <div class="mb-4"><label for="phoneNumber" class="form-label fw-semibold">Phone Number</label><input type="tel" class="form-control form-control-lg" id="phoneNumber" name="phoneNumber" pattern="[0-9+\-\s()]{7,20}" required><div class="invalid-feedback" id="phoneNumberError">Please enter a valid phone number.</div></div>
                             <div class="d-flex gap-3 flex-wrap">
                                 <a href="/cart" class="btn btn-outline-secondary px-4 py-3 rounded-pill fw-bold">Back to Cart</a>
-                                <button type="submit" id="submitButton" class="btn btn-primary px-4 py-3 rounded-pill fw-bold">
-                                    Place Order
-                                </button>
+                                <button type="submit" id="submitButton" class="btn btn-primary px-4 py-3 rounded-pill fw-bold" data-loading-text="Submitting...">Place Order</button>
                             </div>
                         </form>
                     </div>
                 </div>
-
-                <div class="col-lg-5">
-                    <div class="card checkout-card border-0 shadow-sm p-4 sticky-top" style="top: 100px;">
+                <div class="col-lg-5 reveal stagger-2">
+                    <div class="card checkout-card floating-panel border-0 shadow-sm p-4 sticky-top" style="top: 100px;">
                         <h4 class="fw-bold mb-4">Order Snapshot</h4>
                         <div id="checkoutSummary"></div>
                     </div>
@@ -101,198 +48,90 @@
             </div>
         </div>
     </main>
-
+    <%- include('partials/footer') %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/app.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCheckoutSummary();
-            setupCheckoutForm();
-        });
-
+        document.addEventListener('DOMContentLoaded', () => { renderCheckoutSummary(); setupCheckoutForm(); });
         function renderCheckoutSummary() {
             const cartItems = CartManager.getCart();
             const summary = document.getElementById('checkoutSummary');
-
             if (!cartItems.length) {
-                summary.innerHTML = `
-                    <div class="text-center py-4">
-                        <p class="text-muted mb-3">Your cart is empty.</p>
-                        <a href="/" class="btn btn-primary rounded-pill px-4">Continue Shopping</a>
-                    </div>
-                `;
+                summary.innerHTML = `<div class="text-center py-4"><p class="text-muted mb-3">Your cart is empty.</p><a href="/" class="btn btn-primary rounded-pill px-4">Continue Shopping</a></div>`;
                 return;
             }
-
             let total = 0;
             let itemsCount = 0;
             let html = '<div class="d-flex flex-column">';
-
             cartItems.forEach(item => {
                 const subtotal = item.price * item.quantity;
                 total += subtotal;
                 itemsCount += item.quantity;
-
-                html += `
-                    <div class="summary-list-item d-flex justify-content-between py-3">
-                        <div class="pe-3">
-                            <h6 class="fw-bold mb-1">${item.name}</h6>
-                            <p class="text-muted small mb-0">Qty: ${item.quantity}</p>
-                        </div>
-                        <span class="fw-semibold">$${subtotal.toFixed(2)}</span>
-                    </div>
-                `;
+                html += `<div class="summary-list-item d-flex justify-content-between py-3"><div class="pe-3"><h6 class="fw-bold mb-1">${item.name}</h6><p class="text-muted small mb-0">Qty: ${item.quantity}</p></div><span class="fw-semibold">$${subtotal.toFixed(2)}</span></div>`;
             });
-
-            html += `
-                    <hr class="my-4">
-                    <div class="d-flex justify-content-between text-muted mb-2">
-                        <span>Total Items</span>
-                        <span>${itemsCount}</span>
-                    </div>
-                    <div class="d-flex justify-content-between fs-4 fw-bold">
-                        <span>Total</span>
-                        <span class="text-primary">$${total.toFixed(2)}</span>
-                    </div>
-            `;
-
-            html += '</div>';
+            html += `<hr class="my-4"><div class="d-flex justify-content-between text-muted mb-2"><span>Total Items</span><span>${itemsCount}</span></div><div class="d-flex justify-content-between fs-4 fw-bold"><span>Total</span><span class="text-primary">$${total.toFixed(2)}</span></div></div>`;
             summary.innerHTML = html;
         }
-
         function setupCheckoutForm() {
             const form = document.getElementById('checkoutForm');
             const alertContainer = document.getElementById('checkoutAlert');
             const submitButton = document.getElementById('submitButton');
             const phonePattern = /^[0-9+\-\s()]{7,20}$/;
-
             form.addEventListener('submit', async (event) => {
                 event.preventDefault();
                 event.stopPropagation();
-
                 clearFieldErrors();
                 alertContainer.innerHTML = '';
-
-                const formData = {
-                    fullName: document.getElementById('fullName').value.trim(),
-                    address: document.getElementById('address').value.trim(),
-                    phoneNumber: document.getElementById('phoneNumber').value.trim(),
-                    cartItems: CartManager.getCart()
-                };
-
+                const formData = { fullName: document.getElementById('fullName').value.trim(), address: document.getElementById('address').value.trim(), phoneNumber: document.getElementById('phoneNumber').value.trim(), cartItems: CartManager.getCart() };
                 let hasErrors = false;
-
-                if (formData.fullName.length < 3) {
-                    showFieldError('fullName', 'Full name must be at least 3 characters long.');
-                    hasErrors = true;
-                }
-
-                if (formData.address.length < 10) {
-                    showFieldError('address', 'Address must be at least 10 characters long.');
-                    hasErrors = true;
-                }
-
-                if (!phonePattern.test(formData.phoneNumber)) {
-                    showFieldError('phoneNumber', 'Enter a valid phone number.');
-                    hasErrors = true;
-                }
-
+                if (formData.fullName.length < 3) { showFieldError('fullName', 'Full name must be at least 3 characters long.'); hasErrors = true; }
+                if (formData.address.length < 10) { showFieldError('address', 'Address must be at least 10 characters long.'); hasErrors = true; }
+                if (!phonePattern.test(formData.phoneNumber)) { showFieldError('phoneNumber', 'Enter a valid phone number.'); hasErrors = true; }
                 form.classList.add('was-validated');
-
-                if (hasErrors || !form.checkValidity()) {
-                    return;
-                }
-
+                if (hasErrors || !form.checkValidity()) { submitButton.innerHTML = submitButton.dataset.originalText || 'Place Order'; return; }
                 try {
                     submitButton.disabled = true;
                     submitButton.textContent = 'Submitting...';
-
-                    const response = await fetch('/checkout', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
+                    const response = await fetch('/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
                     const result = await response.json();
-
                     if (!response.ok) {
                         if (result.errors) {
                             Object.entries(result.errors).forEach(([field, message]) => {
                                 if (field === 'cartItems') {
-                                    alertContainer.innerHTML = `
-                                        <div class="alert alert-danger rounded-4" role="alert">
-                                            ${message}
-                                        </div>
-                                    `;
+                                    alertContainer.innerHTML = `<div class="alert alert-danger rounded-4" role="alert">${message}</div>`;
                                     return;
                                 }
-
                                 showFieldError(field, message);
                             });
                         }
-
                         if (!alertContainer.innerHTML) {
-                            alertContainer.innerHTML = `
-                                <div class="alert alert-danger rounded-4" role="alert">
-                                    Please correct the highlighted fields and try again.
-                                </div>
-                            `;
+                            alertContainer.innerHTML = `<div class="alert alert-danger rounded-4" role="alert">Please correct the highlighted fields and try again.</div>`;
                         }
                         return;
                     }
-
-                    alertContainer.innerHTML = `
-                        <div class="alert alert-success rounded-4" role="alert">
-                            ${result.message}
-                        </div>
-                    `;
-
+                    alertContainer.innerHTML = `<div class="alert alert-success rounded-4" role="alert">${result.message}</div>`;
                     form.reset();
                     form.classList.remove('was-validated');
                     localStorage.removeItem('luxecart');
                     CartManager.updateCartIcon();
                     renderCheckoutSummary();
                 } catch (error) {
-                    alertContainer.innerHTML = `
-                        <div class="alert alert-danger rounded-4" role="alert">
-                            Something went wrong while submitting your order. Please try again.
-                        </div>
-                    `;
+                    alertContainer.innerHTML = `<div class="alert alert-danger rounded-4" role="alert">Something went wrong while submitting your order. Please try again.</div>`;
                 } finally {
                     submitButton.disabled = false;
                     submitButton.textContent = 'Place Order';
                 }
             });
         }
-
-        function showFieldError(fieldId, message) {
-            const input = document.getElementById(fieldId);
-            const error = document.getElementById(fieldId + 'Error');
-
-            input.classList.add('is-invalid');
-            error.textContent = message;
-        }
-
+        function showFieldError(fieldId, message) { const input = document.getElementById(fieldId); const error = document.getElementById(fieldId + 'Error'); input.classList.add('is-invalid'); error.textContent = message; }
         function clearFieldErrors() {
             ['fullName', 'address', 'phoneNumber'].forEach(fieldId => {
                 const input = document.getElementById(fieldId);
                 const error = document.getElementById(fieldId + 'Error');
-
                 input.classList.remove('is-invalid');
-
-                if (fieldId === 'fullName') {
-                    error.textContent = 'Please enter your full name.';
-                }
-
-                if (fieldId === 'address') {
-                    error.textContent = 'Please enter a valid address.';
-                }
-
-                if (fieldId === 'phoneNumber') {
-                    error.textContent = 'Please enter a valid phone number.';
-                }
+                if (fieldId === 'fullName') error.textContent = 'Please enter your full name.';
+                if (fieldId === 'address') error.textContent = 'Please enter a valid address.';
+                if (fieldId === 'phoneNumber') error.textContent = 'Please enter a valid phone number.';
             });
         }
     </script>

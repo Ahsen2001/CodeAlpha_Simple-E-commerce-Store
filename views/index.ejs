@@ -3,66 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Title and Meta Tags for SEO -->
     <title><%= title %></title>
     <meta name="description" content="A premium and immersive e-commerce experience">
-    
-    <!-- Google Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Custom Styles -->
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg glass-nav fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/">🛍️ LuxeStore</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Shop</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link cart-icon" href="/cart" id="cartToggle">
-                            🛒 <span class="badge rounded-pill bg-primary" id="cartCount">0</span>
-                        </a>
-                    </li>
-                </ul>
+<body class="page-shell">
+    <%- include('partials/header', { activePage }) %>
+    <main class="container mt-5 pt-5 mb-5 section-space">
+        <section class="hero-panel reveal">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7">
+                    <span class="hero-chip mb-3">Curated modern essentials</span>
+                    <h1 class="display-3 fw-bold display-balance mb-3">Discover Premium Picks For Everyday Living.</h1>
+                    <p class="lead soft-text mb-4">Browse refined products with smoother interactions, better spacing, and a faster path from discovery to checkout.</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="#catalog" class="btn btn-primary px-4">Shop Collection</a>
+                        <a href="/cart" class="btn btn-outline-primary px-4">View Cart</a>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="glass-card rounded-5 p-4 reveal stagger-1">
+                        <div class="row g-3">
+                            <div class="col-6"><div class="skeleton skeleton-card"></div></div>
+                            <div class="col-6"><div class="skeleton skeleton-card"></div></div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </section>
+        <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mt-5 mb-4" id="catalog">
+            <div class="reveal stagger-1">
+                <span class="hero-chip">Featured collection</span>
+                <h2 class="fw-bold mt-3 mb-2">Shop the latest arrivals</h2>
+                <p class="soft-text mb-0">Responsive cards, clearer hierarchy, and smoother hover states across every screen size.</p>
+            </div>
+            <div class="reveal stagger-2"><span class="price-pill"><%= products ? products.length : 0 %> products available</span></div>
         </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="container mt-5 pt-5 mb-5">
-        <div class="text-center py-5">
-            <h1 class="display-4 fw-bold">Discover Premium Picks</h1>
-            <p class="lead text-muted">Elevate your lifestyle with our curated collection.</p>
-        </div>
-        
         <div class="row g-4">
             <% if (products && products.length > 0) { %>
-                <% products.forEach(product => { %>
+                <% products.forEach((product, index) => { %>
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card h-100 border-0 shadow-sm product-card">
-                            <div class="img-wrapper position-relative overflow-hidden" style="height: 250px; border-radius: 8px 8px 0 0;">
-                                <img src="<%= product.image %>" class="card-img-top w-100 h-100 object-fit-cover" alt="<%= product.name %>" style="transition: transform 0.5s ease;">
+                        <div class="card h-100 border-0 shadow-sm product-card reveal stagger-<%= (index % 4) + 1 %>">
+                            <div class="img-wrapper position-relative overflow-hidden" style="height: 250px; border-radius: 1.25rem 1.25rem 0 0;">
+                                <img src="<%= product.image %>" class="card-img-top w-100 h-100 object-fit-cover" alt="<%= product.name %>">
                             </div>
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="card-body d-flex flex-column p-4">
+                                <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
                                     <h5 class="card-title fw-bold mb-0 text-truncate"><%= product.name %></h5>
-                                    <span class="badge bg-light text-dark border"><i class="text-warning">★</i> <%= product.rating %></span>
+                                    <span class="rating-pill"><%= product.rating %> / 5</span>
                                 </div>
                                 <p class="card-text fw-bold text-primary fs-5 mb-3">$<%= product.price.toFixed(2) %></p>
                                 <a href="/product/<%= product.id %>" class="btn btn-outline-primary mt-auto rounded-pill w-100 fw-bold">View Details</a>
@@ -71,14 +64,11 @@
                     </div>
                 <% }) %>
             <% } else { %>
-                <div class="col-12 text-center py-5">
-                    <p class="text-muted fs-4">No products found at the moment.</p>
-                </div>
+                <div class="col-12 text-center py-5 reveal"><p class="text-muted fs-4">No products found at the moment.</p></div>
             <% } %>
         </div>
     </main>
-
-    <!-- Bootstrap JS and Custom JS -->
+    <%- include('partials/footer') %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/app.js"></script>
 </body>

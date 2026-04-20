@@ -1,0 +1,27 @@
+<div class="page-loader" data-page-loader>
+    <div class="loader-mark"></div>
+</div>
+
+<nav class="navbar navbar-expand-lg glass-nav fixed-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">LuxeStore</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center gap-lg-2">
+                <li class="nav-item">
+                    <a class="nav-link <%= activePage === 'home' ? 'active' : '' %>" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/#catalog">Shop</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link cart-icon <%= activePage === 'cart' ? 'active' : '' %>" href="/cart" id="cartToggle">
+                        Cart <span class="badge rounded-pill bg-primary" id="cartCount">0</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
