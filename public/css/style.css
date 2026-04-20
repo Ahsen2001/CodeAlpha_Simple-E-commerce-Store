@@ -120,3 +120,76 @@ body {
     .premium-nav { padding: 0.5rem 0; }
     .hero-title { font-size: 2.5rem; }
 }
+
+/* Product Cards */
+.product-card {
+    transition: transform var(--transition-timing), box-shadow var(--transition-timing);
+    border-radius: 16px;
+    overflow: hidden;
+    background: #ffffff;
+}
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08) !important;
+}
+
+.product-image-wrapper {
+    position: relative;
+    padding-top: 100%; /* 1:1 Aspect ratio */
+    overflow: hidden;
+    background-color: #f8f9fa;
+}
+
+.product-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.08);
+}
+
+/* Depth Shift CTA Button */
+.depth-btn {
+    transition: all 0.2s ease;
+    border-width: 2px;
+}
+.depth-btn:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.depth-btn:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+/* Product Details Page */
+.product-showcase {
+    transition: transform var(--transition-timing);
+}
+.product-showcase:hover {
+    transform: scale(1.01);
+}
+.detail-img {
+    object-fit: cover;
+    mix-blend-mode: multiply; /* Helps removing white bg on some images if light bg is used behind */
+}
+
+.details-panel {
+    animation: fadeInRight 0.8s ease backwards;
+}
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.product-title {
+    letter-spacing: -1px;
+}
