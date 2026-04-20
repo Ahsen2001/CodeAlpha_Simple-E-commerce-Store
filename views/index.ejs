@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+
+<section class="hero-section text-center d-flex align-items-center justify-content-center">
+    <div class="container z-1">
+        <h1 class="display-3 fw-bold mb-4 hero-title">Experience the Future of Style.</h1>
+        <p class="lead mb-5 text-muted hero-subtitle">Immersive fashion designed for the bold.</p>
+        <a href="/products" class="btn btn-dark btn-lg px-5 py-3 rounded-pill cta-btn">Shop Collection</a>
+    </div>
+</section>
+
+<div class="container my-5 py-5">
+    <div class="row justify-content-center text-center mb-5">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-3">Trending Now</h2>
+            <p class="text-muted">Discover the pieces everyone is talking about.</p>
+        </div>
+    </div>
+    
+    <div class="row g-4" id="productGrid">
+        <!-- We will dynamically load products here in Phase 2 -->
+        <div class="col-12 text-center">
+            <p class="text-muted">Products will be populated from PostgreSQL in the next phase.</p>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

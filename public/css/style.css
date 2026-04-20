@@ -1,0 +1,122 @@
+:root {
+    --primary-color: #111111;
+    --secondary-color: #f8f9fa;
+    --accent-color: #6c757d;
+    --transition-timing: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    color: var(--primary-color);
+    background-color: #fafafa;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Premium Navbar */
+.premium-nav {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    transition: all var(--transition-timing);
+}
+
+.premium-nav .nav-link {
+    font-weight: 500;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.premium-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--primary-color);
+    transition: width var(--transition-timing);
+}
+
+.premium-nav .nav-link:hover::after,
+.premium-nav .nav-link.active::after {
+    width: 100%;
+}
+
+/* Micro-interaction: Pulsing Cart */
+.cart-icon-container {
+    position: relative;
+    transition: transform var(--transition-timing);
+}
+.cart-icon-container:hover {
+    transform: scale(1.1);
+}
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    font-size: 0.65rem;
+}
+.pulse-badge {
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 5px rgba(0, 0, 0, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+}
+
+
+/* Hero Section */
+.hero-section {
+    min-height: 80vh;
+    background: radial-gradient(circle at center, #ffffff 0%, #f4f4f4 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-title {
+    letter-spacing: -1px;
+    animation: fadeInUp 0.8s ease backwards;
+}
+.hero-subtitle {
+    animation: fadeInUp 0.8s ease backwards 0.2s;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* CTA Buttons */
+.cta-btn {
+    transition: all var(--transition-timing);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.8s ease backwards 0.4s;
+}
+.cta-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.cta-btn:active {
+    transform: translateY(1px);
+}
+
+/* Footer Links */
+.footer-link {
+    transition: opacity var(--transition-timing);
+    opacity: 0.6;
+}
+.footer-link:hover {
+    opacity: 1;
+}
+
+/* Base thumb-zone rules */
+@media (max-width: 768px) {
+    .premium-nav { padding: 0.5rem 0; }
+    .hero-title { font-size: 2.5rem; }
+}
